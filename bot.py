@@ -30,7 +30,7 @@ def send_text(message):
 
 
 def init_keyboard():
-    telebot.types.ReplyKeyboardMarkup()
+    keyboard = telebot.types.ReplyKeyboardMarkup()
     keyboard.row('Города', 'Описание')
 
 
