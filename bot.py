@@ -2,8 +2,9 @@ import os
 import requests
 import datetime
 from time import sleep
+import telebot
 
-
+'''
 class BotHandler:
     
     def __init__(self, token):
@@ -15,7 +16,7 @@ class BotHandler:
         params = {'timeout': timeout, 'offset': offset}
         resp = requests.get(self.api_url + method, params)
         result_json = resp.json()['result']
-        #print('result_json = {0}'.format(result_json))
+        print('result_json = {0}'.format(result_json))
         return result_json
 
     def send_message(self, chat_id, text):
@@ -69,6 +70,36 @@ def main():
             today += 1
 
         new_offset = last_update_id + 1
+'''
+
+token = os.environ.get('TOKEN', '')
+bot = telebot.TeleBot(token)
+
+@bot.message_handler(commands=['start'])
+def start_message(message):
+    bot.send_message(message.chat.id, 'Привет, ты написал мне /start', reply_markup=keyboard1)
+
+
+@bot.message_handler(content_types=['text'])
+def send_text(message):
+    if message.text.lower() == 'привет':
+        bot.send_message(message.chat.id, 'Привет, мой создатель')
+    elif message.text.lower() == 'пока':
+        bot.send_message(message.chat.id, 'Прощай, создатель')
+    elif message.text.lower() == 'я тебя люблю':
+        bot.send_sticker(message.chat.id, 'CAADAgADZgkAAnlc4gmfCor5YbYYRAI')
+
+
+@bot.message_handler(content_types=['sticker'])
+def sticker_id(message):
+    print(message)
+
+
+def main():
+    keyboard1 = telebot.types.ReplyKeyboardMarkup()
+    keyboard1.row('Привет', 'Пока')
+    bot.polling()
+
 
 if __name__ == '__main__':  
     try:
