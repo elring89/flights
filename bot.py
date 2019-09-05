@@ -74,6 +74,8 @@ def main():
 
 token = os.environ.get('TOKEN', '')
 bot = telebot.TeleBot(token)
+keyboard1 = telebot.types.ReplyKeyboardMarkup()
+keyboard1.row('Привет', 'Пока')
 
 @bot.message_handler(commands=['start'])
 def start_message(message):
@@ -96,8 +98,6 @@ def sticker_id(message):
 
 
 def main():
-    keyboard1 = telebot.types.ReplyKeyboardMarkup()
-    keyboard1.row('Привет', 'Пока')
     bot.polling()
 
 
