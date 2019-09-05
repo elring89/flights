@@ -15,6 +15,7 @@ class BotHandler:
         params = {'timeout': timeout, 'offset': offset}
         resp = requests.get(self.api_url + method, params)
         result_json = resp.json()['result']
+        #print('result_json = {0}'.format(result_json))
         return result_json
 
     def send_message(self, chat_id, text):
@@ -40,13 +41,12 @@ def main():
     today = now.day
     hour = now.hour
     token = os.environ.get('TOKEN', '')
-    k = os.environ.get('K', 2)
-    print('!!! {0}'.format(k))
     greet_bot = BotHandler(token)  
     greetings = ('здравствуй', 'привет', 'ку', 'здорово')  
     
 
     while True:
+        print('робот запущен')
         greet_bot.get_updates(new_offset)
 
         last_update = greet_bot.get_last_update()
