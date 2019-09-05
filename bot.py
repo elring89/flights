@@ -3,6 +3,7 @@ import requests
 import datetime
 from time import sleep
 
+
 class BotHandler:
     
     def __init__(self, token):
@@ -32,18 +33,20 @@ class BotHandler:
 
         return last_update
 
-token = os.getenv("TOKEN")
-greet_bot = BotHandler(token)  
-greetings = ('здравствуй', 'привет', 'ку', 'здорово')  
-now = datetime.datetime.now()
 
-def main():  
+def main():
+    now = datetime.datetime.now()
     new_offset = None
     today = now.day
     hour = now.hour
-    return True
-    '''
+    token = os.getenv("TOKEN")
+    greet_bot = BotHandler(token)  
+    greetings = ('здравствуй', 'привет', 'ку', 'здорово')  
+    
+
     while True:
+        print('!')
+        '''
         greet_bot.get_updates(new_offset)
 
         last_update = greet_bot.get_last_update()
@@ -66,10 +69,12 @@ def main():
             today += 1
 
         new_offset = last_update_id + 1
-    '''
+        '''
 
 if __name__ == '__main__':  
     try:
         main()
     except KeyboardInterrupt:
         exit()
+    except Exception as exc:
+        print(exc)
