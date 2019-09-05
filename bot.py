@@ -39,7 +39,9 @@ def main():
     new_offset = None
     today = now.day
     hour = now.hour
-    token = os.getenv("TOKEN")
+    token = os.environ.get('TOKEN', '')
+    k = os.environ.get('K', 2)
+    print('!!! {0}'.format(k))
     greet_bot = BotHandler(token)  
     greetings = ('здравствуй', 'привет', 'ку', 'здорово')  
     
