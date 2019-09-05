@@ -79,4 +79,4 @@ def get_city_info():
 def get_cities():
     if not city_set:
         fill_city_set()
-    return city_set
+    return list(city_set)

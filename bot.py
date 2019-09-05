@@ -1,4 +1,5 @@
 import os
+import asyncio
 from time import sleep
 import telebot
 from airports import get_city_info, get_cities
@@ -6,7 +7,7 @@ from airports import get_city_info, get_cities
 
 token = os.environ.get('TOKEN', '')
 bot = telebot.TeleBot(token, threaded=False)
-keyboard = None
+buttons = None
 
 
 @bot.message_handler(commands=['start'])
@@ -14,28 +15,32 @@ def start_message(message):
     bot.send_message(
         message.chat.id,
         'Трям! Узнать что летает из Уфы...',
-        reply_markup=keyboard
+        reply_markup=buttons
     )
 
 
 @bot.message_handler(content_types=['text'])
-def send_text(message):
+async def send_text(message):
+    print('Обработка сообщения..')
     if message.text.lower() == 'Города':
-        msgs = ', '.join(get_cities())
+        cities = await get_cities()
+        msgs = ', '.join(cities)
         bot.send_message(message.chat.id, msgs)
     elif message.text.lower() == 'Описание':
-        msgs = ', '.join(get_city_info())
+        info = await get_city_info()
+        msgs = ', '.join(info)
         bot.send_message(message.chat.id, msgs)
-    print('Обработка сообщения')
+    print('Обработка сообщения закончена')
 
 
-def init_keyboard():
-    keyboard = telebot.types.ReplyKeyboardMarkup()
-    keyboard.row('Города', 'Описание')
+def init_buttons():
+    buttons = telebot.types.ReplyKeyboardMarkup()
+    buttons.row('Города', 'Описание')
 
 
 def main():
-    init_keyboard()
+    init_buttons()
+    print('Запуск..')
     while True:
         try:
             bot.polling(none_stop=True)
