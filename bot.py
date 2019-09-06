@@ -1,7 +1,7 @@
 import os
 from time import sleep
 import telebot
-from airports import get_city_info, get_cities
+from airports import get_tomorrow_schedule
 
 
 token = os.environ.get('TOKEN', '')
@@ -11,7 +11,7 @@ bot = telebot.TeleBot(token, threaded=False)
 @bot.message_handler(commands=['start'])
 def start_message(message):
     buttons = telebot.types.ReplyKeyboardMarkup()
-    buttons.row('Города', 'Описание')
+    buttons.row('Аэропорт Уфы на завтра')
     bot.send_message(
         message.chat.id,
         'Трям! Узнать что летает из Уфы...',
@@ -22,14 +22,9 @@ def start_message(message):
 @bot.message_handler(content_types=['text'])
 def send_text(message):
     print('Обработка сообщения..')
-    if message.text.lower() == 'города':
-        cities = get_cities()
-        msgs = ' \n'.join(cities)
-        bot.send_message(message.chat.id, msgs)
-    elif message.text.lower() == 'описание':
-        info = get_city_info()
-        msgs = ', '.join(info)
-        bot.send_message(message.chat.id, msgs)
+    if message.text.lower() == 'аэропорт уфы на завтра':
+        schedule = get_tomorrow_schedule()
+        bot.send_message(message.chat.id, schedule)
     print('Обработка сообщения закончена')
 
 

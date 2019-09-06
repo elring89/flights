@@ -3,6 +3,7 @@ from time import sleep
 import requests
 from lxml import html
 from geopy.geocoders import Nominatim
+import json
 
 MAX_PAGE_COUNT = 3
 SLEEP_SEC_COUNT = 2
@@ -28,9 +29,8 @@ city_info_dict = {}
 
 def fill_city_set(days_count=7, page_count=2):
     """
-    Получение данных из уфимского аэропорта
+    Получение данных из уфимского аэропорта из расписания (неточные данные)
     """
-    print('Запрос в аэропорт')
     today = date.today()
     city_set = set()
     for d in range(days_count):
@@ -46,6 +46,38 @@ def fill_city_set(days_count=7, page_count=2):
                 # сначала город, потом авиакомпания (пропускаем)
                 city_set.add(el[i])
         sleep(SLEEP_SEC_COUNT)
+
+
+def get_tomorrow_schedule():
+    """
+    Получение расписания на завтра с сайта уфимского аэропорта
+    """
+    # day=2 на завтра
+    url = 'http://www.airportufa.ru/regularFlight/read?day=2&operation=0&limit=0&_=1567789188346'
+    geolocator = Nominatim(user_agent="elring")
+    airports_dict = {}
+
+    result = requests.get(url)
+    parsed_lst = json.loads(result.content)
+    for parsed in parsed_lst:
+        airport_name = parsed['direction_ru']
+        if airports_dict.get(airport_name):
+            continue
+        city_info = ''
+        try:
+            # убираем лишнюю инфу из скобочек
+            city_name = airport_name.split('(')[0].strip()
+            geo_info = geolocator.geocode(city_name, language='ru')
+            city_info = geo_info.address if geo_info else ''
+        except Exception as exc:
+            print(exc)
+        airports_dict[airport_name] = '{0} / {1}'.format(
+            parsed['aircompany']['name_ru'], city_info
+        )
+        #print(airports_dict[airport_name])
+
+    ad_sorted = sorted(airports_dict)
+    return ' \n'.join(ad_sorted.values())
 
 
 # def get_airports_info_from_wiki():
