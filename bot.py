@@ -21,11 +21,11 @@ def start_message(message):
 @bot.message_handler(content_types=['text'])
 def send_text(message):
     print('Обработка сообщения..')
-    if message.text.lower() == 'Города':
+    if message.text.lower() == 'города':
         cities = get_cities()
         msgs = ', '.join(cities)
         bot.send_message(message.chat.id, msgs)
-    elif message.text.lower() == 'Описание':
+    elif message.text.lower() == 'описание':
         info = get_city_info()
         msgs = ', '.join(info)
         bot.send_message(message.chat.id, msgs)
