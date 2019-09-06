@@ -24,7 +24,7 @@ def start_message(message):
 def send_text(message):
     print('Обработка сообщения..')
     if message.text.lower() == 'аэропорт уфы на завтра':
-        schedule = ''#airport.get_schedule_msg()
+        schedule = airport.get_schedule_msg()
         msg = schedule or 'Не удалось получить информацию.'
         bot.send_message(message.chat.id, msg)
     print('Обработка сообщения закончена')
@@ -46,12 +46,6 @@ def webhook():
 def main():
     print('Запуск..')
     server.run(host="0.0.0.0", port=int(os.environ.get('PORT', 5000)))
-    #while True:
-    #    try:
-    #        bot.polling(none_stop=True)
-    #    except Exception as e:
-    #        print(e)
-    #        sleep(15)
 
 
 if __name__ == '__main__':

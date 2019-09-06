@@ -82,7 +82,7 @@ class UfaAirport():
         return address
 
     def fill_directions(self, day_num=2):
-        # day=2 на завтра
+        # day_num=2 на завтра
         url = '{0}regularFlight/read?day={1}&operation=0&limit=0&_=1567789188346'.format(
             UFA_AIRPORT_URL, day_num)
         print('Обращение в аэропорт')
@@ -90,6 +90,7 @@ class UfaAirport():
         parsed_result = json.loads(result.content)
         if not parsed_result and day_num == 2:
             # за сегодня
+            sleep(2)
             self.fill_directions(day_num=1)
         for parsed in parsed_result:
             direction = parsed['direction_ru']
@@ -113,8 +114,8 @@ class UfaAirport():
             schedule_msg += self.directions[k] + ' \n'
         return schedule_msg
 
-UA = UfaAirport()
-msg = UA.get_schedule_msg()
-print(msg)
-msg = UA.get_schedule_msg()
-print(msg)
+#UA = UfaAirport()
+#msg = UA.get_schedule_msg()
+#print(msg)
+#msg = UA.get_schedule_msg()
+#print(msg)
