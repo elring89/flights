@@ -23,7 +23,8 @@ def send_text(message):
     print('Обработка сообщения..')
     if message.text.lower() == 'аэропорт уфы на завтра':
         schedule = airport.get_schedule_msg()
-        bot.send_message(message.chat.id, schedule)
+        msg = schedule or 'Не удалось получить информацию.'
+        bot.send_message(message.chat.id, msg)
     print('Обработка сообщения закончена')
 
 

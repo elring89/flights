@@ -67,23 +67,30 @@ class UfaAirport():
 
     def get_address(self, direction):
         geolocator = Nominatim(user_agent="elring")
-        address = ''
+        address = direction
         try:
             # убираем лишнюю инфу из скобочек
             city_name = direction.split('(')[0].strip()
             geo = geolocator.geocode(city_name, language='ru')
-            address = geo.address if geo else ''
+            if geo:
+                full_address = geo.address
+                lst = full_address.split(',')
+                # берем только первое и последнее вхождение
+                address = '{}, {}'.format(lst[0], lst[-1:][0])
         except Exception as exc:
             print(exc)
         return address
 
-    def fill_directions(self):
+    def fill_directions(self, day_num=2):
         # day=2 на завтра
         url = '{0}regularFlight/read?day={1}&operation=0&limit=0&_=1567789188346'.format(
-            UFA_AIRPORT_URL, 2)
+            UFA_AIRPORT_URL, day_num)
         print('Обращение в аэропорт')
         result = requests.get(url)
         parsed_result = json.loads(result.content)
+        if not parsed_result and day_num == 2:
+            # за сегодня
+            self.fill_directions(day_num=1)
         for parsed in parsed_result:
             direction = parsed['direction_ru']
             if self.directions.get(direction):
