@@ -54,30 +54,33 @@ def get_tomorrow_schedule():
     """
     # day=2 на завтра
     url = 'http://www.airportufa.ru/regularFlight/read?day=2&operation=0&limit=0&_=1567789188346'
+    # для получения инфы о городах
     geolocator = Nominatim(user_agent="elring")
-    airports_dict = {}
 
+    ap_dict = {}
     result = requests.get(url)
-    parsed_lst = json.loads(result.content)
-    for parsed in parsed_lst:
+    parsed_result = json.loads(result.content)
+    for parsed in parsed_result:
         airport_name = parsed['direction_ru']
-        if airports_dict.get(airport_name):
+        if ap_dict.get(airport_name):
             continue
         city_info = ''
         try:
             # убираем лишнюю инфу из скобочек
             city_name = airport_name.split('(')[0].strip()
-            geo_info = geolocator.geocode(city_name, language='ru')
-            city_info = geo_info.address if geo_info else ''
+            geo = geolocator.geocode(city_name, language='ru')
+            city_info = geo.address if geo else ''
         except Exception as exc:
             print(exc)
-        airports_dict[airport_name] = '{0} / {1}'.format(
-            parsed['aircompany']['name_ru'], city_info
-        )
+        ap_dict[airport_name] = '{0} / {1}'.format(parsed['aircompany']['name_ru'], city_info)
         #print(airports_dict[airport_name])
 
-    ad_sorted = sorted(airports_dict)
-    return ' \n'.join(ad_sorted.values())
+    s = ''
+    sorted_keys = sorted(ap_dict.keys())
+    for k in sorted_keys:
+        s += ap_dict[k] + ' \n'
+    #print(s)
+    return s
 
 
 # def get_airports_info_from_wiki():
@@ -114,3 +117,6 @@ def get_cities():
     fill_city_set()
     city_list = sorted(list(city_set))
     return city_list
+
+
+get_tomorrow_schedule()
