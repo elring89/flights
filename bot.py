@@ -1,11 +1,10 @@
 import os
 from time import sleep
 import telebot
-from airports import get_tomorrow_schedule
+import airports
 
-
-token = os.environ.get('TOKEN', '')
-bot = telebot.TeleBot(token, threaded=False)
+bot = telebot.TeleBot(os.environ.get('TOKEN', ''), threaded=False)
+airport = airports.UfaAirport()
 
 
 @bot.message_handler(commands=['start'])
@@ -23,7 +22,7 @@ def start_message(message):
 def send_text(message):
     print('Обработка сообщения..')
     if message.text.lower() == 'аэропорт уфы на завтра':
-        schedule = get_tomorrow_schedule()
+        schedule = airport.get_schedule_msg()
         bot.send_message(message.chat.id, schedule)
     print('Обработка сообщения закончена')
 
