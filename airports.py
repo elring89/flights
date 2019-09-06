@@ -3,7 +3,6 @@ from time import sleep
 import requests
 from lxml import html
 from geopy.geocoders import Nominatim
-#import wikipedia
 
 MAX_PAGE_COUNT = 3
 SLEEP_SEC_COUNT = 2
@@ -53,9 +52,10 @@ def fill_city_set(days_count=7, page_count=2):
 #     """
 #     Получение краткого описания аэропортов с вики
 #     """
+#     import wikipedia
 #     if not city_set:
 #         fill_city_set()
-#     wikipedia.set_lang("ru")
+#     wikipedia.set_lang('ru')
 #     for city in city_set:
 #         search_text = '{0} аэропорт'.format(city)
 #         print(wikipedia.summary(search_text))
@@ -68,15 +68,17 @@ def get_city_info():
     if not city_set:
         fill_city_set()
     geolocator = Nominatim(user_agent="elring")
-    for city in city_set:
+    city_list = sorted(list(city_set))
+    for city in city_list:
         city_name = city.split('(')[0].strip()
         if not city_info_dict.get(city_name):
-            city_info = (geolocator.geocode(city_name, language='ru'))
-            city_info_dict[city_name] = city_info
-    return city_info_dict.values()
+            city_info = geolocator.geocode(city_name, language='ru')
+            city_info_dict[city_name] = city_info.address if city_info else ''
+    city_info_list = city_info_dict.values()
+    return city_info_list
 
 
 def get_cities():
-    if not city_set:
-        fill_city_set()
-    return list(city_set)
+    fill_city_set()
+    city_list = sorted(list(city_set))
+    return city_list
