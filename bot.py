@@ -1,5 +1,4 @@
 import os
-import asyncio
 from time import sleep
 import telebot
 from airports import get_city_info, get_cities
@@ -20,14 +19,14 @@ def start_message(message):
 
 
 @bot.message_handler(content_types=['text'])
-async def send_text(message):
+def send_text(message):
     print('Обработка сообщения..')
     if message.text.lower() == 'Города':
-        cities = await get_cities()
+        cities = get_cities()
         msgs = ', '.join(cities)
         bot.send_message(message.chat.id, msgs)
     elif message.text.lower() == 'Описание':
-        info = await get_city_info()
+        info = get_city_info()
         msgs = ', '.join(info)
         bot.send_message(message.chat.id, msgs)
     print('Обработка сообщения закончена')
